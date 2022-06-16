@@ -93,11 +93,14 @@ What is the value of this product?
 //    return max;
 //}
 
-int findGreatestProduct(string givenNum, int numOfAdjacents)
+int* findGreatestProduct(string givenNum, int numOfAdjacents)
 {
-    int max = 0;
     int numOfDigitsInQueue = 0;
     int product = 1;
+
+    int maxProduct = 0;
+    int maxIndex = 0;
+    int maxProductAndIndex[2];
 
     for (int i = 0; i < givenNum.length(); i++)
     {
@@ -105,10 +108,9 @@ int findGreatestProduct(string givenNum, int numOfAdjacents)
         string next(1, givenNum[i]);
         
         if (numOfDigitsInQueue != numOfAdjacents) {
-            string current(1, givenNum[i]);
+            product = product * stoi(next);
+            if (product > maxProduct) { maxProduct = product; }
 
-            product = product * stoi(current);
-            if (product > max) { max = product; }
             numOfDigitsInQueue++;
         }
         else if (stoi(next) != 0) {
@@ -116,7 +118,11 @@ int findGreatestProduct(string givenNum, int numOfAdjacents)
             string firstDigit(1, givenNum[i - numOfAdjacents]);
 
             product = stoi(next) * (product / (stoi(firstDigit) * pow(10, numOfAdjacents - 1)));
-            if (product > max) { max = product; }
+            if (product > maxProduct) 
+            { 
+                maxProduct = product; 
+                maxIndex = stoi(firstDigit);
+            }
         }
         else { //if stoi(next) = 0
             numOfDigitsInQueue = 0;
@@ -124,17 +130,33 @@ int findGreatestProduct(string givenNum, int numOfAdjacents)
         }
     }
 
-    return max;
+    maxProductAndIndex[0] = maxProduct;
+    maxProductAndIndex[1] = maxIndex;
+    
+    return maxProductAndIndex;
+}
+
+string findMultipliers(string givenNum, int numOfAdjacents, int maxIndex)
+{
+    string multipliers = "";
+    
+    for (int i = maxIndex; i < maxIndex + numOfAdjacents; i++)
+    {
+        if (multipliers == "") { multipliers = givenNum[i]; }
+        else { multipliers = multipliers + " x " + givenNum[i]; }
+    }
+
+    return multipliers;
 }
 
 string NumFromFile(string filename)
 {
-    std::fstream myFile;
+    fstream myFile;
     myFile.open(filename);
 
-    std::string outputInt = "";
+    string outputInt = "";
 
-    std::string fileLine;
+    string fileLine;
     while (getline(myFile, fileLine))
     {
         outputInt = outputInt + fileLine;
@@ -148,36 +170,36 @@ int main()
     bool programRunning = true;
     int choice;
 
-    std::cout << "WELCOME TO MY SOLUTION TO PROJECT EULER PROBLEM #8!" << std::endl;
+    cout << "WELCOME TO MY SOLUTION TO PROJECT EULER PROBLEM #8!" << endl;
     
     //MAIN MENU
     while (programRunning)
     {
-        std::cout << "\n_________________________________________________________________________________" << std::endl;
-        std::cout << "Problem details...\n" << std::endl;
+        cout << "\n_________________________________________________________________________________" << endl;
+        cout << "Problem details...\n" << endl;
 
-        std::cout << "Within the given number, find the adjacent digits that have the greatest product." << std::endl;
-        std::cout << "The output should include the adjacent digits, and the value of the product." << std::endl;
-        std::cout << "The given number can vary in length up to 1000 digits," << std::endl;
-        std::cout << "and the amount of calculated adjacent digits can vary up to 13 digits." << std::endl;
-        std::cout << "Do this in C++ or Java with a O(n) processing time.\n" << std::endl;
+        cout << "Within the given number, find the adjacent digits that have the greatest product." << endl;
+        cout << "The output should include the adjacent digits, and the value of the product." << endl;
+        cout << "The given number can vary in length up to 1000 digits," << endl;
+        cout << "and the amount of calculated adjacent digits can vary up to 13 digits." << endl;
+        cout << "Do this in C++ or Java with a O(n) processing time.\n" << endl;
 
-        std::cout << "---------------------------------------------------" << std::endl;
-        std::cout << "ACTIONS MENU\n" << std::endl;
+        cout << "---------------------------------------------------" << endl;
+        cout << "ACTIONS MENU\n" << endl;
 
-        std::cout << "\t1) Original parameters  : Given original 1000 digits, find greatest product of 13 adjacent." << std::endl;
-        std::cout << "\t2) Custom parameters    : Randomly generate x digits, find greatest product of x adjacent digits." << std::endl;
-        std::cout << "\t3) Filed parameters     : Get digits from file, find greatest product of x adjacent digits." << std::endl;
-        std::cout << "\t0) Exit Program!" << std::endl;
+        cout << "\t1) Original parameters  : Given original 1000 digits, find greatest product of 13 adjacent." << endl;
+        cout << "\t2) Custom parameters    : Randomly generate x digits, find greatest product of x adjacent digits." << endl;
+        cout << "\t3) Filed parameters     : Get digits from file, find greatest product of x adjacent digits." << endl;
+        cout << "\t0) Exit Program!" << endl;
 
-        std::cout << "\nPlease enter a number to select an option...";
-        std::cin >> choice;
+        cout << "\nPlease enter a number to select an option...";
+        cin >> choice;
 
         switch (choice)
         {
         case 0:
         {
-            std::cout << "\nEnding program ... Goodbye!" << std::endl;
+            cout << "\nEnding program ... Goodbye!" << endl;
             programRunning = false;
 
             break;
@@ -191,8 +213,12 @@ int main()
             
             //write file
             string numFromFile = NumFromFile("original.txt");
+            int greatestProduct = findGreatestProduct(numFromFile, 13)[0];
+            int greatestProductIndex = findGreatestProduct(numFromFile, 13)[1];
+            string multipliers = findMultipliers(numFromFile, 13, greatestProductIndex);
 
-            std::cout << numFromFile << "\n\n" << findGreatestProduct(numFromFile, 13);
+
+            cout << numFromFile << "\n\n"<< multipliers << "\n\n" << greatestProduct;
 
             break;
         }
@@ -212,20 +238,30 @@ int main()
         case 3:
         {
             //Filed parameters : Get digits from file, find greatest product of x adjacent digits.
-
+            string fileName;
+            int numOfAdjacents;
             
-
             //ask for filename
+            cout << "File name:" << endl;
+            cin >> fileName;
+
             //ask for numOfAdjacents
+            cout << "Number of adjacents:" << endl;
+            cin >> numOfAdjacents;
 
             //run findGreatestProduct on numFromFile(filename) and numOfAdjacents
+            string numFromFile = NumFromFile(fileName);
+            int greatestProduct = findGreatestProduct(numFromFile, numOfAdjacents)[0];
+            int greatestProductIndex = findGreatestProduct(numFromFile, numOfAdjacents)[1];
+            string multipliers = findMultipliers(numFromFile, numOfAdjacents, greatestProductIndex);
 
+            cout << numFromFile << "\n\n" << multipliers << "\n\n" << greatestProduct;
 
             break;
         }
         default:
         {
-            std::cout << "\nPlease try again." << std::endl;
+            cout << "\nPlease try again." << std::endl;
 
             break;
         }
