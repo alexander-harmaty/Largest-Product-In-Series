@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 
+using namespace std;
+
 /**
 ORIGINAL PROBLEM
 
@@ -49,7 +51,8 @@ What is the value of this product?
 * givenNum - string or matrix up to 1000 digits
 * givenNumSize - 
 * 
-* 
+* 1,000,000,000,000
+* 1,000,000,000,000
 * 
 * numFromFile(filename) 
     - method to read .txt file and return a string of ints or matrix of ints
@@ -57,7 +60,74 @@ What is the value of this product?
     - method to solve euler and returns value of product, and the index of the first adjacent int
 */
 
-std::string numfromFile(std::string filename)
+//int findGreatestProduct(string givenNum, int numOfAdjacents)
+//{
+//    int max = 0;
+//    int product = 1;
+//
+//    for (int i = 0; i < numOfAdjacents; i++)
+//    {
+//        string current(1, givenNum[i]);
+//        product = product * stoi(current);
+//    }
+//    
+//    max = product;
+//
+//    for (int i = numOfAdjacents; i < givenNum.length(); i++)
+//    {
+//        string current(1, givenNum[i]);
+//        string first(1, givenNum[i - numOfAdjacents]);
+//
+//        if (stoi(first) != 0)
+//        {
+//            product = (product / (stoi(first) * pow(10, numOfAdjacents - 1))) * stoi(current);
+//
+//            if (product > max) { max = product; }
+//        }
+//        else 
+//        {
+//            product = product * stoi(current);
+//        }
+//    }
+//
+//    return max;
+//}
+
+int findGreatestProduct(string givenNum, int numOfAdjacents)
+{
+    int max = 0;
+    int numOfDigitsInQueue = 0;
+    int product = 1;
+
+    for (int i = 0; i < givenNum.length(); i++)
+    {
+        //start with index i as the next digit to be mult
+        string next(1, givenNum[i]);
+        
+        if (numOfDigitsInQueue != numOfAdjacents) {
+            string current(1, givenNum[i]);
+
+            product = product * stoi(current);
+            if (product > max) { max = product; }
+            numOfDigitsInQueue++;
+        }
+        else if (stoi(next) != 0) {
+            string lastDigit(1, givenNum[i - 1]);
+            string firstDigit(1, givenNum[i - numOfAdjacents]);
+
+            product = stoi(next) * (product / (stoi(firstDigit) * pow(10, numOfAdjacents - 1)));
+            if (product > max) { max = product; }
+        }
+        else { //if stoi(next) = 0
+            numOfDigitsInQueue = 0;
+            product = 1;
+        }
+    }
+
+    return max;
+}
+
+string NumFromFile(string filename)
 {
     std::fstream myFile;
     myFile.open(filename);
@@ -83,7 +153,7 @@ int main()
     //MAIN MENU
     while (programRunning)
     {
-        std::cout << "_________________________________________________________________________________" << std::endl;
+        std::cout << "\n_________________________________________________________________________________" << std::endl;
         std::cout << "Problem details...\n" << std::endl;
 
         std::cout << "Within the given number, find the adjacent digits that have the greatest product." << std::endl;
@@ -115,13 +185,14 @@ int main()
         case 1:
         {
             //Run with original parameters : Given original 1000 digits, find greatest product of 13 adjacent.
-
+                       
             //run numFromFile to find the original given number
             //run findGreatestProduct on the numFromFile and 13 adjacents
-
-           std::cout << numfromFile("original.txt");
-
+            
             //write file
+            string numFromFile = NumFromFile("original.txt");
+
+            std::cout << numFromFile << "\n\n" << findGreatestProduct(numFromFile, 13);
 
             break;
         }
