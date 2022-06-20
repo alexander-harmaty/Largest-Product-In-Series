@@ -95,7 +95,7 @@ What is the value of this product?
 
 int* findGreatestProduct(string givenNum, int numOfAdjacents)
 {
-    int numOfDigitsInQueue = 0;
+    int digitsInQueue = 0;
     int product = 1;
 
     int maxProduct = 0;
@@ -107,17 +107,25 @@ int* findGreatestProduct(string givenNum, int numOfAdjacents)
         //start with index i as the next digit to be mult
         string next(1, givenNum[i]);
         
-        if (numOfDigitsInQueue != numOfAdjacents) {
+        if (digitsInQueue != numOfAdjacents) {
             product = product * stoi(next);
             if (product > maxProduct) { maxProduct = product; }
 
-            numOfDigitsInQueue++;
+            digitsInQueue++;
         }
         else if (stoi(next) != 0) {
             string lastDigit(1, givenNum[i - 1]);
             string firstDigit(1, givenNum[i - numOfAdjacents]);
 
-            product = stoi(next) * (product / (stoi(firstDigit) * pow(10, numOfAdjacents - 1)));
+            if (stoi(firstDigit) != 0)
+            {
+                product = (product / stoi(firstDigit)) * stoi(next);
+            }
+            else
+            {
+                product = product * stoi(next);
+            }
+            
             if (product > maxProduct) 
             { 
                 maxProduct = product; 
@@ -125,7 +133,7 @@ int* findGreatestProduct(string givenNum, int numOfAdjacents)
             }
         }
         else { //if stoi(next) = 0
-            numOfDigitsInQueue = 0;
+            digitsInQueue = 0;
             product = 1;
         }
     }
@@ -188,7 +196,7 @@ int main()
         cout << "ACTIONS MENU\n" << endl;
 
         cout << "\t1) Original parameters  : Given original 1000 digits, find greatest product of 13 adjacent." << endl;
-        cout << "\t2) Custom parameters    : Randomly generate x digits, find greatest product of x adjacent digits." << endl;
+        //cout << "\t2) Custom parameters    : Randomly generate x digits, find greatest product of x adjacent digits." << endl;
         cout << "\t3) Filed parameters     : Get digits from file, find greatest product of x adjacent digits." << endl;
         cout << "\t0) Exit Program!" << endl;
 
