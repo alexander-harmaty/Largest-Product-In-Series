@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <Windows.h>
 
 using namespace std;
 
@@ -37,61 +38,31 @@ Find the thirteen adjacent digits in the 1000-digit number that have the greates
 What is the value of this product?
 **/
 
-/*
-* my notes
-* 
-* O(n) processing time. (i.e. one loop, not a nested loop)
-* 1000 digits (20*50)
-* 
-* Submit code with a picture of the output together in a pdf, or seperatley in a txt file.
-* 
-* 
-* Overall parameters:
-* numOfAdjacents - number of adjacent digits to calc (up to 13)
-* givenNum - string or matrix up to 1000 digits
-* givenNumSize - 
-* 
-* 1,000,000,000,000
-* 1,000,000,000,000
-* 
-* numFromFile(filename) 
-    - method to read .txt file and return a string of ints or matrix of ints
-* findGreatestProduct(givenNum, numOfAdjacents) 
-    - method to solve euler and returns value of product, and the index of the first adjacent int
-*/
+string NumFromFile(string filename)
+{
+    fstream myFile;
+    myFile.open(filename);
 
-//int findGreatestProduct(string givenNum, int numOfAdjacents)
-//{
-//    int max = 0;
-//    int product = 1;
-//
-//    for (int i = 0; i < numOfAdjacents; i++)
-//    {
-//        string current(1, givenNum[i]);
-//        product = product * stoi(current);
-//    }
-//    
-//    max = product;
-//
-//    for (int i = numOfAdjacents; i < givenNum.length(); i++)
-//    {
-//        string current(1, givenNum[i]);
-//        string first(1, givenNum[i - numOfAdjacents]);
-//
-//        if (stoi(first) != 0)
-//        {
-//            product = (product / (stoi(first) * pow(10, numOfAdjacents - 1))) * stoi(current);
-//
-//            if (product > max) { max = product; }
-//        }
-//        else 
-//        {
-//            product = product * stoi(current);
-//        }
-//    }
-//
-//    return max;
-//}
+    string outputInt = "";
+
+    string fileLine;
+    while (getline(myFile, fileLine))
+    {
+        outputInt = outputInt + fileLine;
+    }
+
+    return outputInt;
+}
+
+string NumGenerator(int givenNumSize)
+{
+    srand(time(0));
+    string generatedNumber;
+    for (int i = 0; i < givenNumSize; i++)
+        generatedNumber = generatedNumber + to_string(rand() % 10);
+
+    return generatedNumber;
+}
 
 int* FindGreatestProduct(string givenNum, int numOfAdjacents)
 {
@@ -123,7 +94,6 @@ int* FindGreatestProduct(string givenNum, int numOfAdjacents)
             if (product > maxProduct) 
             { 
                 maxProduct = product; 
-                //i need the index not the value of the first digit!!!!!
                 maxIndex = i - numOfAdjacents + 1;
             }
         }
@@ -152,30 +122,36 @@ string FindMultipliers(string givenNum, int numOfAdjacents, int maxIndex)
     return multipliers;
 }
 
-string NumFromFile(string filename)
+void NumWithSolution(string givenNum, int numOfAdjacents, int maxIndex)
 {
-    fstream myFile;
-    myFile.open(filename);
-
-    string outputInt = "";
-
-    string fileLine;
-    while (getline(myFile, fileLine))
+    string numBeforeSolution = "";
+    for (int i = 0; i <= maxIndex - 1; i++) 
     {
-        outputInt = outputInt + fileLine;
+        if (i % 50 == 0) numBeforeSolution = numBeforeSolution + "\n";
+        numBeforeSolution = numBeforeSolution + givenNum[i];
+    }
+    
+    string multipliers = "";
+    for (int i = maxIndex; i < maxIndex + numOfAdjacents; i++)
+    {
+        if (i % 50 == 0) multipliers = multipliers + "\n";
+        multipliers = multipliers + givenNum[i];
+    }
+        
+    string numAfterSolution = "";
+    for (int i = maxIndex + numOfAdjacents; i < givenNum.length(); i++)
+    {
+        if (i % 50 == 0) numAfterSolution = numAfterSolution + "\n";
+        numAfterSolution = numAfterSolution + givenNum[i];
     }
 
-    return outputInt;
-}
-
-string NumberGenerator(int givenNumSize)
-{
-    srand(time(0));
-    string generatedNumber;
-    for (int i = 0; i < givenNumSize; i++)
-        generatedNumber = generatedNumber + to_string(rand() % 10);
-
-    return generatedNumber;
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(h, 15);
+    cout << numBeforeSolution;
+    SetConsoleTextAttribute(h, 4);
+    cout << multipliers;
+    SetConsoleTextAttribute(h, 15);
+    cout << numAfterSolution;
 }
 
 int main() 
@@ -222,12 +198,14 @@ int main()
                 
                 cout << "Within the given number below, find 13 adjacent digits with the greatest product!" << endl;
 
-                string numFromFile = NumFromFile("testFile.txt");
+                string numFromFile = NumFromFile("original.txt");
                 int greatestProduct = FindGreatestProduct(numFromFile, 13)[0];
                 int greatestProductIndex = FindGreatestProduct(numFromFile, 13)[1];
                 string multipliers = FindMultipliers(numFromFile, 13, greatestProductIndex);
 
-                cout << "\nResults...\n\n" << numFromFile << "\n\n"<< multipliers << " =\n\n" << greatestProduct << endl;
+                cout << "\nResults...\n" << endl;
+                NumWithSolution(numFromFile, 13, greatestProductIndex);
+                cout << "\n\n" << multipliers << " =\n\n" << greatestProduct << endl;
 
                 cout << "\n-------------------------------------------------------------------------------------------------" << endl;
                 
@@ -243,17 +221,19 @@ int main()
                 cout << "To generate the number, please enter the desired amount of digits: ";
                 cin >> givenNumSize;
                 
-                cout << "\nPlease enter the number of adjacent digits to find:";
+                cout << "Please enter the number of adjacent digits to find: ";
                 cin >> numOfAdjacents;
 
-                cout << "Within the given number below, find " << numOfAdjacents << " adjacent digits with the greatest product!" << endl;
+                cout << "\nWithin the given number below, find " << numOfAdjacents << " adjacent digits with the greatest product!" << endl;
                 
-                string givenNum = NumberGenerator(givenNumSize);
+                string givenNum = NumGenerator(givenNumSize);
                 int greatestProduct = FindGreatestProduct(givenNum, numOfAdjacents)[0];
                 int greatestProductIndex = FindGreatestProduct(givenNum, numOfAdjacents)[1];
                 string multipliers = FindMultipliers(givenNum, numOfAdjacents, greatestProductIndex);
 
-                cout << "\nResults...\n\n" << givenNum << "\n\n" << multipliers << " =\n\n" << greatestProduct << endl;
+                cout << "\nResults...\n" << endl;
+                NumWithSolution(givenNum, numOfAdjacents, greatestProductIndex);
+                cout << "\n\n" << multipliers << " =\n\n" << greatestProduct << endl;
 
                 cout << "\n-------------------------------------------------------------------------------------------------" << endl;
                 
@@ -269,17 +249,19 @@ int main()
                 cout << "To get the number from a file, please enter the file name (w/ .txt): ";
                 cin >> fileName;
 
-                cout << "\nPlease enter the number of adjacent digits to find:";
+                cout << "Please enter the number of adjacent digits to find: ";
                 cin >> numOfAdjacents;
 
-                cout << "Within the given number below, find " << numOfAdjacents << " adjacent digits with the greatest product!" << endl;
+                cout << "\nWithin the given number below, find " << numOfAdjacents << " adjacent digits with the greatest product!" << endl;
 
                 string numFromFile = NumFromFile(fileName);
                 int greatestProduct = FindGreatestProduct(numFromFile, numOfAdjacents)[0];
                 int greatestProductIndex = FindGreatestProduct(numFromFile, numOfAdjacents)[1];
                 string multipliers = FindMultipliers(numFromFile, numOfAdjacents, greatestProductIndex);
 
-                cout << "\nResults...\n\n" << numFromFile << "\n\n" << multipliers << "\n\n" << greatestProduct << endl;
+                cout << "\nResults...\n" << endl;
+                NumWithSolution(numFromFile, numOfAdjacents, greatestProductIndex);
+                cout << "\n\n" << multipliers << "\n\n" << greatestProduct << endl;
             
                 cout << "\n-------------------------------------------------------------------------------------------------" << endl;
                 
@@ -295,4 +277,3 @@ int main()
     }
     exit(0);
 }
-
