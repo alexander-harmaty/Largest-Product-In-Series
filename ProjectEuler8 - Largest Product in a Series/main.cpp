@@ -124,7 +124,7 @@ int* findGreatestProduct(string givenNum, int numOfAdjacents)
             { 
                 maxProduct = product; 
                 //i need the index not the value of the first digit!!!!!
-                maxIndex = i - numOfAdjacents;
+                maxIndex = i - numOfAdjacents + 1;
             }
         }
         else { //if stoi(next) = 0
@@ -215,7 +215,7 @@ int main()
             //run findGreatestProduct on the numFromFile and 13 adjacents
             
             //write file
-            string numFromFile = NumFromFile("original.txt");
+            string numFromFile = NumFromFile("testFile.txt");
             int greatestProduct = findGreatestProduct(numFromFile, 13)[0];
             int greatestProductIndex = findGreatestProduct(numFromFile, 13)[1];
             string multipliers = findMultipliers(numFromFile, 13, greatestProductIndex);
