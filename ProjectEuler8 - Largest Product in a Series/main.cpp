@@ -116,20 +116,15 @@ int* findGreatestProduct(string givenNum, int numOfAdjacents)
         else if (stoi(next) != 0) {
             string lastDigit(1, givenNum[i - 1]);
             string firstDigit(1, givenNum[i - numOfAdjacents]);
-
-            if (stoi(firstDigit) != 0)
-            {
-                product = (product / stoi(firstDigit)) * stoi(next);
-            }
-            else
-            {
-                product = product * stoi(next);
-            }
+            
+            if (stoi(firstDigit) == 0) { product = product * stoi(next); }
+            else { product = (product / stoi(firstDigit)) * stoi(next); }
             
             if (product > maxProduct) 
             { 
                 maxProduct = product; 
-                maxIndex = stoi(firstDigit);
+                //i need the index not the value of the first digit!!!!!
+                maxIndex = i - numOfAdjacents;
             }
         }
         else { //if stoi(next) = 0
