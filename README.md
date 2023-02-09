@@ -10,5 +10,6 @@ My program finds the solution to this problem in multiple ways, and prompts the 
 The first option finds the thirteen adjacent digits solution from the given 1000 digit number. 
 The second option finds the solution to the user input number of adjacent digits from a randomly generated number consisting of a user input number of digits. 
 The third option finds the solution to the user input number of adjacent digits from digits read within a user selected file. 
+In all options listed, the program will provide the solution by highlighting the adjacent numbers in red, then show the value of their product below. 
 
 This project was made with C++ and finds a solution within an O(n) processing time. 
