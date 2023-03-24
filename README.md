@@ -1,4 +1,4 @@
-# ProjectEuler8_Largest-Product-in-a-Series
+# Project Euler #8 - Largest Product in a Series
 
 (FSC-CSC-251-ProjectEuler#8)
 
