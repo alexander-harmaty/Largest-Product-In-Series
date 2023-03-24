@@ -2,6 +2,9 @@
 
 (FSC-CSC-251-ProjectEuler#8)
 
+Original prompt:
+https://projecteuler.net/problem=8
+
 ## Output Menu
 
 ![outputMenu](images/outputMenu.png)
