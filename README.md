@@ -4,7 +4,7 @@
 
 ## Output Menu
 
-![outputMenu](outputMenu.png)
+![outputMenu](images/outputMenu.png)
 
 ## Assignment Context
 
@@ -70,7 +70,7 @@ It then calls the FindGreatestProduct function with an input of 13 (the number o
 Finally, it outputs the largest product, as well as the adjacent digits that gave rise to that product, by calling the NumWithSolution function.
 
 #### Output
-![option1](option1.png)
+![option1](images/option1.png)
 
 ### Option 2: Solving a generated question with custom parameters
 
@@ -79,7 +79,7 @@ It generates a random number of the specified length using the NumGenerator func
 The program stores the resulting largest product and its index in variables, and outputs the largest product, as well as the adjacent digits that gave rise to that product, by calling the NumWithSolution function.
 
 #### Output
-![option2](option2.png)
+![option2](images/option2.png)
 
 ### Option 3: Solving a custom question with custom parameters
 
@@ -88,4 +88,4 @@ It reads in the number from the specified file using the NumFromFile function, a
 The program stores the resulting largest product and its index in variables, and outputs the largest product, as well as the adjacent digits that gave rise to that product, by calling the NumWithSolution function.
 
 #### Output
-![option3](option3.png)
+![option3](images/option3.png)
