@@ -21,7 +21,7 @@ Project Eulers question #8 provides a 1000-digit number, and I was to find the t
 
 Additionally, my professor had further challenged us by constraining solutions to an O(n) processing time. 
 
-This project was written with C++ in Visual Studio 2022.
+This project was written with C++ in Visual Studio 2019.
 
 ## Features
 
